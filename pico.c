@@ -22,7 +22,7 @@ enum editorKey {
 struct editorConfig {
     int cx, cy;
     int rowoff;
-    int screenrows, screencols;
+    int screen_rows, screen_cols;
     int numrows;
     char **rows;
     char *filename;
@@ -103,8 +103,8 @@ void getWindowSize(void) {
     if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1)
         die("ioctl");
 
-    E.screenrows = ws.ws_row - 1;
-    E.screencols = ws.ws_col;
+    E.screen_rows = ws.ws_row - 1;
+    E.screen_cols = ws.ws_col;
 }
 
 /* ---------- File ---------- */
@@ -196,7 +196,7 @@ void editorInsertNewline(void) {
 /* ---------- Drawing ---------- */
 
 void editorDrawRows(void) {
-    for (int y = 0; y < E.screenrows; y++) {
+    for (int y = 0; y < E.screen_rows; y++) {
         int filerow = y + E.rowoff;
         if (filerow < E.numrows) {
             safe_write(STDOUT_FILENO, E.rows[filerow], strlen(E.rows[filerow]));
@@ -212,7 +212,7 @@ void editorDrawStatusBar(void) {
 
     safe_write(STDOUT_FILENO, "\x1b[7m", 4);
     safe_write(STDOUT_FILENO, status, len);
-    while (len < E.screencols) {
+    while (len < E.screen_cols) {
         safe_write(STDOUT_FILENO, " ", 1);
         len++;
     }
@@ -262,8 +262,8 @@ void editorMoveCursor(int key) {
 
     if (E.cy < E.rowoff)
         E.rowoff = E.cy;
-    if (E.cy >= E.rowoff + E.screenrows)
-        E.rowoff = E.cy - E.screenrows + 1;
+    if (E.cy >= E.rowoff + E.screen_rows)
+        E.rowoff = E.cy - E.screen_rows + 1;
 }
 
 void editorProcessKeypress(void) {
@@ -306,6 +306,7 @@ void initEditor(void) {
 }
 
 int main(int argc, char *argv[]) {
+
     if (argc != 2) {
         fprintf(stderr, "Usage: pico <file>\n");
         exit(1);

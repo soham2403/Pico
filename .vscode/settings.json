@@ -1,0 +1,9 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/soham/dev/Pico",
+            "binaryPath": "/home/soham/dev/Pico/pico",
+            "binaryArgs": []
+        }
+    ]
+}
